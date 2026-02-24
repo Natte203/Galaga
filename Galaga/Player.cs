@@ -20,15 +20,14 @@ public class Player : Entity {
         ((DynamicShape) Shape).Velocity.X = move; // Vend evt. tilbage og tjek. Lav evt. egen property. 
     }
 
-    public void Move() {
+    public void Move() { // Shape.Position for lang ift Style Guide
         ((DynamicShape) Shape).Move();
         Shape.Position = new Vector2(Math.Clamp(Shape.Position.X, 0.0f, 1.0f - Shape.Extent.X), Shape.Position.Y);
-        // TODO: move the shape and guard against the window borders
     }
 
     public void SetMoveLeft(bool val) {
         if (val) {
-            moveLeft = - MOVEMENT_SPEED; // Maybe moveLeft -= MOVEMENT_SPEED
+            moveLeft = - MOVEMENT_SPEED;
         }
         else { moveLeft = 0; }
         UpdateVelocity(moveLeft);
@@ -36,7 +35,7 @@ public class Player : Entity {
 
     public void SetMoveRight(bool val) {
         if (val) {
-            moveRight = MOVEMENT_SPEED; // Maybe moveLeft += MOVEMENT_SPEED
+            moveRight = MOVEMENT_SPEED;
         }
         else { moveRight = 0; }
         UpdateVelocity(moveRight);
@@ -54,7 +53,7 @@ public class Player : Entity {
             case KeyboardKey.Right:
                 SetMoveRight(true);
                 Move();
-                break; // Husk ESC i Game.cs
+                break;
         }
     }
 }
