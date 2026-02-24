@@ -13,9 +13,13 @@ public class Game : DIKUGame {
             new DynamicShape(new Vector2(0.45f, 0.1f),
                             new Vector2(0.1f, 0.1f)),
             new Image("Galaga.Assets.Images.Player.png"));
+<<<<<<< Updated upstream
 
         // TODO: Set key event handler (inherited window field of DIKUGame class)
+=======
+>>>>>>> Stashed changes
 
+        // TODO: Set key event handler (inherited window field of DIKUGame class)
     }
 
     public override void Render(WindowContext context) {
@@ -27,7 +31,11 @@ public class Game : DIKUGame {
     }
 
     public override void KeyHandler(KeyboardAction action, KeyboardKey key) {
+<<<<<<< Updated upstream
         // Code here
+=======
+        player.KeyHandler(action, key);
+        // Husk ESC
+>>>>>>> Stashed changes
     }
-
 }

@@ -1,25 +1,60 @@
 namespace Galaga;
 
+using System;
+using System.Numerics;
 using DIKUArcade.Entities;
 using DIKUArcade.Graphics;
 using DIKUArcade.GUI;
+using DIKUArcade.Input;
 
 public class Player : Entity {
-
+    private float moveLeft = 0.0f;
+    private float moveRight = 0.0f;
+    private const float MOVEMENT_SPEED = 0.01f;
+ 
     public Player(DynamicShape shape, IBaseImage image) : base(shape, image) {
         
     }
 
+    private void UpdateVelocity(float move) {
+        ((DynamicShape) Shape).Velocity.X = move; // Vend evt. tilbage og tjek. Lav evt. egen property. 
+    }
+
     public void Move() {
+        ((DynamicShape) Shape).Move();
+        Shape.Position = new Vector2(Math.Clamp(Shape.Position.X, 0.0f, 1.0f - Shape.Extent.X), Shape.Position.Y);
         // TODO: move the shape and guard against the window borders
     }
 
     public void SetMoveLeft(bool val) {
-        // TODO:set moveLeft appropriately and call UpdateVelocity()
+        if (val) {
+            moveLeft = - MOVEMENT_SPEED; // Maybe moveLeft -= MOVEMENT_SPEED
+        }
+        else { moveLeft = 0; }
+        UpdateVelocity(moveLeft);
     }
 
     public void SetMoveRight(bool val) {
-        // TODO:set moveRight appropriately and call UpdateVelocity()
+        if (val) {
+            moveRight = MOVEMENT_SPEED; // Maybe moveLeft += MOVEMENT_SPEED
+        }
+        else { moveRight = 0; }
+        UpdateVelocity(moveRight);
     }
 
+    public void KeyHandler(KeyboardAction action, KeyboardKey key) {
+        if (action != KeyboardAction.KeyPress) {
+            return;
+        }
+        switch (key) {
+            case KeyboardKey.Left:
+                SetMoveLeft(true);
+                Move();
+                break;
+            case KeyboardKey.Right:
+                SetMoveRight(true);
+                Move();
+                break; // Husk ESC i Game.cs
+        }
+    }
 }
