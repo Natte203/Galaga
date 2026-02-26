@@ -40,36 +40,7 @@ public class Game : DIKUGame {
         }
         //5.2.4 Player: Shooting
         playerShots = new EntityContainer<PlayerShot>();
-        playerShotImage = new Image("Galaga.Assets.Images.BulletRed2.png");  
-    }
-    
-        private void IterateShots() {
-            float topBoundery = 0f; 
-            playerShots.Iterate(shots => {  //=>{} er en lambda funktion. shots er én instance af Playershots. Den tilgås via shots.Shape
-                shots.Shape.Move(); //bevæger shots
-                if (shots.Shape.Position.Y + shots.Shape.Extent.Y < topBoundery) { 
-                    shots.DeleteEntity(); // hvis shot kommer udenfor skærmens top slettes det
-                    } 
-                else {
-                    enemies.Iterate(enemy => { 
-                    CollisionData data = 
-                        CollisionDetection.Aabb(
-                            shots.Shape.AsDynamicShape(), enemy.Shape.AsDynamicShape() //shots og enemy castes til at være dynamicshapes for at kollision kan tjekkes
-                        ); //beregner kollision som objekt
-                    if (data.Collision) { //bestemmer en bool udfra kollisions-objektet (CollisionData.cs)
-                        shots.DeleteEntity(); //shots slettes ved kollition -> true
-                        enemy.DeleteEntity(); //shots slettes ved kollition -> true
-                    } 
-                    });
-                }
-            });
-        }
-
-        private void createShot() {
-            Vector2 pos = player.GetPosition();
-            PlayerShot shot = new PlayerShot(pos, playerShotImage);
-            playerShots.AddEntity(shot);
-        }
+        playerShotImage = new Image("Galaga.Assets.Images.BulletRed2.png"); 
 
         // 5.3 Events
         // gameEventBus = new GameEventBus(); //GameEventBus obj (Events.GameEventBus)
@@ -78,8 +49,35 @@ public class Game : DIKUGame {
         explosionStrides = ImageStride.CreateStrides(
             8, "Galaga.Assets.Images.Explosion.png" 
         ); //Laver en liste med 8 billieder af eksplosion
+    }
+    
+    private void IterateShots() {
+        float topBoundery = 0f; 
+        playerShots.Iterate(shots => {  //=>{} er en lambda funktion. shots er én instance af Playershots. Den tilgås via shots.Shape
+            shots.Shape.Move(); //bevæger shots
+            if (shots.Shape.Position.Y + shots.Shape.Extent.Y < topBoundery) { 
+                shots.DeleteEntity(); // hvis shot kommer udenfor skærmens top slettes det
+                } 
+            else {
+                enemies.Iterate(enemy => { 
+                CollisionData data = 
+                    CollisionDetection.Aabb(
+                        shots.Shape.AsDynamicShape(), enemy.Shape.AsDynamicShape() //shots og enemy castes til at være dynamicshapes for at kollision kan tjekkes
+                    ); //beregner kollision som objekt
+                if (data.Collision) { //bestemmer en bool udfra kollisions-objektet (CollisionData.cs)
+                    shots.DeleteEntity(); //shots slettes ved kollition -> true
+                    enemy.DeleteEntity(); //shots slettes ved kollition -> true
+                } 
+                });
+            }
+        });
+    }
 
-        // TODO: Set key event handler (inherited window field of DIKUGame class)
+    private void createShot() {
+        Vector2 pos = player.GetPosition();
+        PlayerShot shot = new PlayerShot(pos, playerShotImage);
+        playerShots.AddEntity(shot);
+    }
 
     // ~Game() { //Cleanup?
     //     gameEventBus.Unsubscribe<AddExplosionEvent>(AddExplosion);
