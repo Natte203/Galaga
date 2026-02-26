@@ -2,13 +2,14 @@ namespace Galaga;
 
 using System.Collections.Generic;
 using System.Numerics;
+using Microsoft.VisualBasic;
+using System.Reflection;
 using DIKUArcade;
 using DIKUArcade.GUI;
 using DIKUArcade.Input;
 using DIKUArcade.Entities;
 using DIKUArcade.Graphics;
 using DIKUArcade.Events; 
-using System.Reflection;
 using DIKUArcade.Physics;
 
 public class Game : DIKUGame {
@@ -16,7 +17,7 @@ public class Game : DIKUGame {
     private EntityContainer<Enemy> enemies;
     private EntityContainer<PlayerShot> playerShots; //added w 5.2.4
     private IBaseImage playerShotImage;             //Added w 5.2.4
-    // private GameEventBus gameEventBus;
+    private GameEventBus gameEventBus;
     private AnimationContainer enemyExplosions;
     private List<Image> explosionStrides;
     private const int EXPLOSION_LENGTH_MS = 500;
@@ -43,8 +44,8 @@ public class Game : DIKUGame {
         playerShotImage = new Image("Galaga.Assets.Images.BulletRed2.png"); 
 
         // 5.3 Events
-        // gameEventBus = new GameEventBus(); //GameEventBus obj (Events.GameEventBus)
-        // gameEventBus.Subscribe<AddExplosionEvent>(AddExplosion); //Tilføjer AddExplosion til eventbus
+        gameEventBus = new GameEventBus(); //GameEventBus obj (Events.GameEventBus)
+        gameEventBus.Subscribe<AddExplosionEvent>(AddExplosion); //Tilføjer AddExplosion til eventbus
         enemyExplosions = new AnimationContainer(numEnemies); //Instantierer en container med 8 pladser
         explosionStrides = ImageStride.CreateStrides(
             8, "Galaga.Assets.Images.Explosion.png" 
@@ -66,6 +67,8 @@ public class Game : DIKUGame {
                     ); //beregner kollision som objekt
                 if (data.Collision) { //bestemmer en bool udfra kollisions-objektet (CollisionData.cs)
                     shots.DeleteEntity(); //shots slettes ved kollision -> true
+                    gameEventBus.RegisterEvent<AddExplosionEvent>(
+                        new AddExplosionEvent(enemy.Position, enemy.Extent)); //Tilføjer et event til eventbus køen
                     enemy.DeleteEntity(); //shots slettes ved kollision -> true
                 } 
                 });
@@ -79,9 +82,9 @@ public class Game : DIKUGame {
         playerShots.AddEntity(shot);
     }
 
-    // ~Game() { //Cleanup?
-    //     gameEventBus.Unsubscribe<AddExplosionEvent>(AddExplosion);
-    // }    
+    ~Game() { //Cleanup?
+        gameEventBus.Unsubscribe<AddExplosionEvent>(AddExplosion);
+    }    
 
     public override void Render(WindowContext context) {
         player.RenderEntity(context);
@@ -92,7 +95,7 @@ public class Game : DIKUGame {
 
     public override void Update() {
         IterateShots();
-        // gameEventBus.ProcessEvents(); //Kører events gemt i gameEventBus & fortæller subscribers at events er kørt
+        gameEventBus.ProcessEvents(); //Kører events gemt i gameEventBus & fortæller subscribers at events er kørt
     }
 
     public override void KeyHandler(KeyboardAction action, KeyboardKey key) {
