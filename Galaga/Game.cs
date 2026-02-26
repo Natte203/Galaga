@@ -11,6 +11,7 @@ using DIKUArcade.Entities;
 using DIKUArcade.Graphics;
 using DIKUArcade.Events; 
 using DIKUArcade.Physics;
+using System.Security.Principal;
 
 public class Game : DIKUGame {
     private Player player;
@@ -108,7 +109,11 @@ public class Game : DIKUGame {
                 createShot();
                 break;
         }
-        //Husk ESC
+        switch (key) {
+            case KeyboardKey.Escape:
+                window.CloseWindow();
+                break;
+        }
     }
 
     public void AddExplosion(AddExplosionEvent addExplosionEvent) {

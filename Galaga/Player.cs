@@ -2,6 +2,7 @@ namespace Galaga;
 
 using System;
 using System.Numerics;
+using System.Reflection.Metadata;
 using DIKUArcade.Entities;
 using DIKUArcade.Graphics;
 using DIKUArcade.GUI;
@@ -11,18 +12,30 @@ public class Player : Entity {
     private float moveLeft = 0.0f;
     private float moveRight = 0.0f;
     private const float MOVEMENT_SPEED = 0.01f;
+    
+    public Vector2 Position { 
+        get { return Shape.Position; }
+        private set { Shape.Position = value; }
+    }
+    public Vector2 Velocity { 
+        get { return ((DynamicShape) Shape).Velocity; }
+        private set { ((DynamicShape) Shape).Velocity = value; }
+        }
+    public Vector2 Extent {
+        get { return Shape.Extent; }
+        private set { Shape.Position = value; }
+    }
  
     public Player(DynamicShape shape, IBaseImage image) : base(shape, image) {
-        
     }
 
     private void UpdateVelocity(float move) {
-        ((DynamicShape) Shape).Velocity.X = move; // Vend evt. tilbage og tjek. Lav evt. egen property. 
+        Velocity = new Vector2(move, Velocity.Y); 
     }
 
-    public void Move() { // Shape.Position for lang ift Style Guide
+    public void Move() {
         ((DynamicShape) Shape).Move();
-        Shape.Position = new Vector2(Math.Clamp(Shape.Position.X, 0.0f, 1.0f - Shape.Extent.X), Shape.Position.Y);
+        Position = new Vector2(Math.Clamp(Position.X, 0.0f, 1.0f - Extent.X), Position.Y);
     }
 
     public void SetMoveLeft(bool val) {
@@ -58,7 +71,7 @@ public class Player : Entity {
     }
     
     public Vector2 GetPosition () {
-        Vector2 gunPosition = Shape.Position; // tager positionen for det nederste venstre hjørne af objektet
+        Vector2 gunPosition = Position; // tager positionen for det nederste venstre hjørne af objektet
         gunPosition = new Vector2(gunPosition.X + 0.045f, gunPosition.Y + 0.1f); //placerer skuddet lidt foran gunnen
         return gunPosition;
     }
