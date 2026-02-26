@@ -52,12 +52,12 @@ public class Game : DIKUGame {
     }
     
     private void IterateShots() {
-        float topBoundery = 0f; 
+        float topBoundary = 1f; 
         playerShots.Iterate(shots => {  //=>{} er en lambda funktion. shots er én instance af Playershots. Den tilgås via shots.Shape
             shots.Shape.Move(); //bevæger shots
-            if (shots.Shape.Position.Y + shots.Shape.Extent.Y < topBoundery) { 
+            if (shots.Shape.Position.Y + shots.Shape.Extent.Y >= topBoundary) { 
                 shots.DeleteEntity(); // hvis shot kommer udenfor skærmens top slettes det
-                } 
+            } 
             else {
                 enemies.Iterate(enemy => { 
                 CollisionData data = 
@@ -65,8 +65,8 @@ public class Game : DIKUGame {
                         shots.Shape.AsDynamicShape(), enemy.Shape.AsDynamicShape() //shots og enemy castes til at være dynamicshapes for at kollision kan tjekkes
                     ); //beregner kollision som objekt
                 if (data.Collision) { //bestemmer en bool udfra kollisions-objektet (CollisionData.cs)
-                    shots.DeleteEntity(); //shots slettes ved kollition -> true
-                    enemy.DeleteEntity(); //shots slettes ved kollition -> true
+                    shots.DeleteEntity(); //shots slettes ved kollision -> true
+                    enemy.DeleteEntity(); //shots slettes ved kollision -> true
                 } 
                 });
             }

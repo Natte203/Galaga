@@ -10,8 +10,8 @@ public class PlayerShot : Entity {
     private static Vector2 velocity = new Vector2(0.0f, 0.01f);
 
     public PlayerShot(Vector2 position, IBaseImage image) 
-        : base(new DynamicShape(position, extent), image) {
-        ((DynamicShape) Shape).Velocity = velocity;                 //Added this, despite of it not being explicit in the assignment text - otherwise the bullets didn't move
+        : base(new DynamicShape(position, extent, velocity), image) { // Har tilføjet velocity her istedet
+        // ((DynamicShape) Shape).Velocity = velocity; //Added this, despite of it not being explicit in the assignment text - otherwise the bullets didn't move
     }
     
 }
