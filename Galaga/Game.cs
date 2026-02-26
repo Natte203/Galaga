@@ -14,8 +14,8 @@ public class Game : DIKUGame {
     private Player player;
     private EntityContainer<Enemy> enemies;
     // private GameEventBus gameEventBus;
-    // private AnimationContainer enemyExplosions;
-    // private List<Image> explosionStrides;
+    private AnimationContainer enemyExplosions;
+    private List<Image> explosionStrides;
     private const int EXPLOSION_LENGTH_MS = 500;
 
     public Game(WindowArgs windowArgs) : base(windowArgs) {
@@ -36,13 +36,13 @@ public class Game : DIKUGame {
                 new ImageStride(80, images))); // Her sættes en ImageStride: public ImageStride(int milliseconds, IEnumerable<Image> images) 
         }
 
-        //5.3 Events
+        // 5.3 Events
         // gameEventBus = new GameEventBus(); //GameEventBus obj (Events.GameEventBus)
         // gameEventBus.Subscribe<AddExplosionEvent>(AddExplosion); //Tilføjer AddExplosion til eventbus
-        // enemyExplosions = new AnimationContainer(numEnemies); //Instantierer en container med 8 pladser
-        // explosionStrides = ImageStride.CreateStrides(
-        //     8, "Galaga.Assets.Images.Explosion.png" 
-        // ); //Laver en Stride med 8 billieder af eksplosion
+        enemyExplosions = new AnimationContainer(numEnemies); //Instantierer en container med 8 pladser
+        explosionStrides = ImageStride.CreateStrides(
+            8, "Galaga.Assets.Images.Explosion.png" 
+        ); //Laver en liste med 8 billieder af eksplosion
 
         // TODO: Set key event handler (inherited window field of DIKUGame class)
     }
@@ -54,6 +54,7 @@ public class Game : DIKUGame {
     public override void Render(WindowContext context) {
         player.RenderEntity(context);
         enemies.RenderEntities(context); // RenderEnteties ligger i EntityContainer.cs.
+        enemyExplosions.RenderAnimations(context);
     }
 
     public override void Update() {
@@ -65,7 +66,10 @@ public class Game : DIKUGame {
         // Husk ESC
     }
 
-    // public void AddExplosion(AddExplosionEvent addExplosionEvent) {
-        //Add explosion to AnimationContainer
-    // }
+    public void AddExplosion(AddExplosionEvent addExplosionEvent) {
+        enemyExplosions.AddAnimation(
+            new StationaryShape(addExplosionEvent.Position, addExplosionEvent.Extent), 
+            EXPLOSION_LENGTH_MS,
+            new ImageStride(EXPLOSION_LENGTH_MS / 8, explosionStrides));
+    }
 }
