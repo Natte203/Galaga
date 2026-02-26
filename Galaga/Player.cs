@@ -23,7 +23,7 @@ public class Player : Entity {
         }
     public Vector2 Extent {
         get { return Shape.Extent; }
-        private set { Shape.Position = value; }
+        private set { Shape.Position = value; } // HER ER VIST EN COPY-PASTE FEJL. Det skal være Shape.Extent = value, ikke? 
     }
  
     public Player(DynamicShape shape, IBaseImage image) : base(shape, image) {
