@@ -6,6 +6,11 @@ using DIKUArcade.Graphics;
 
 public class PlayerShot : Entity {
 
-    public PlayerShot(DynamicShape shape, IBaseImage image) : base(shape, image) { }
-    
+    private static Vector2 extent = new Vector2(0.008f, 0.021f);
+    private static Vector2 velocity = new Vector2(0.0f, 0.01f);
+
+    //public PlayerShot(DynamicShape shape, IBaseImage image) : base(shape, image) { }
+    public PlayerShot(Vector2 position, IBaseImage image) 
+        : base(new DynamicShape(position, extent), image) {
+    }
 }

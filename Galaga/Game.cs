@@ -7,6 +7,7 @@ using DIKUArcade.GUI;
 using DIKUArcade.Input;
 using DIKUArcade.Entities;
 using DIKUArcade.Graphics;
+
 public class Game : DIKUGame {
         private Player player;
         private EntityContainer<Enemy> enemies;
