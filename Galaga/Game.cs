@@ -96,6 +96,7 @@ public class Game : DIKUGame {
 
     public override void Update() {
         IterateShots();
+        player.Move();
         gameEventBus.ProcessEvents(); //Kører events gemt i gameEventBus & fortæller subscribers at events er kørt
     }
 

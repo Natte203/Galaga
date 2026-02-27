@@ -23,14 +23,14 @@ public class Player : Entity {
         }
     public Vector2 Extent {
         get { return Shape.Extent; }
-        private set { Shape.Position = value; } // HER ER VIST EN COPY-PASTE FEJL. Det skal være Shape.Extent = value, ikke? 
+        private set { Shape.Extent = value; }
     }
  
     public Player(DynamicShape shape, IBaseImage image) : base(shape, image) {
     }
 
-    private void UpdateVelocity(float move) {
-        Velocity = new Vector2(move, Velocity.Y); 
+    private void UpdateVelocity() {
+        Velocity = new Vector2(moveLeft + moveRight, Velocity.Y); 
     }
 
     public void Move() {
@@ -43,7 +43,7 @@ public class Player : Entity {
             moveLeft = - MOVEMENT_SPEED;
         }
         else { moveLeft = 0; }
-        UpdateVelocity(moveLeft);
+        UpdateVelocity();
     }
 
     public void SetMoveRight(bool val) {
@@ -51,22 +51,29 @@ public class Player : Entity {
             moveRight = MOVEMENT_SPEED;
         }
         else { moveRight = 0; }
-        UpdateVelocity(moveRight);
+        UpdateVelocity();
     }
 
     public void KeyHandler(KeyboardAction action, KeyboardKey key) {
-        if (action != KeyboardAction.KeyPress) {
-            return;
-        }
-        switch (key) {
-            case KeyboardKey.Left:
-                SetMoveLeft(true);
-                Move();
-                break;
-            case KeyboardKey.Right:
-                SetMoveRight(true);
-                Move();
-                break;
+        if (action == KeyboardAction.KeyPress) {
+            switch (key) {
+                case KeyboardKey.Left:
+                    SetMoveLeft(true);
+                    break;
+                case KeyboardKey.Right:
+                    SetMoveRight(true);
+                    break;
+            }
+        }    
+        if (action == KeyboardAction.KeyRelease) {
+            switch (key) {
+                case KeyboardKey.Left:
+                    SetMoveLeft(false);
+                    break;
+                case KeyboardKey.Right:
+                    SetMoveRight(false);
+                    break;
+            }
         }
     }
     
