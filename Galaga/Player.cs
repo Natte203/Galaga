@@ -78,8 +78,8 @@ public class Player : Entity {
     }
     
     public Vector2 GetPosition () {
-        Vector2 gunPosition = Position; // tager positionen for det nederste venstre hjørne af objektet
-        gunPosition = new Vector2(gunPosition.X + 0.045f, gunPosition.Y + 0.1f); //placerer skuddet lidt foran gunnen
+        Vector2 gunPosition = Position;
+        gunPosition = new Vector2(gunPosition.X + 0.045f, gunPosition.Y + 0.1f);
         return gunPosition;
     }
 }

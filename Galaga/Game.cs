@@ -16,8 +16,8 @@ using System.Security.Principal;
 public class Game : DIKUGame {
     private Player player;
     private EntityContainer<Enemy> enemies;
-    private EntityContainer<PlayerShot> playerShots; //added w 5.2.4
-    private IBaseImage playerShotImage;             //Added w 5.2.4
+    private EntityContainer<PlayerShot> playerShots; 
+    private IBaseImage playerShotImage;             
     private GameEventBus gameEventBus;
     private AnimationContainer enemyExplosions;
     private List<Image> explosionStrides;
@@ -28,49 +28,47 @@ public class Game : DIKUGame {
             new DynamicShape(new Vector2(0.45f, 0.1f),
                             new Vector2(0.1f, 0.1f)),
             new Image("Galaga.Assets.Images.Player.png"));
+
+        gameEventBus = new GameEventBus();
+        gameEventBus.Subscribe<AddExplosionEvent>(AddExplosion); 
         
-        //5.2.3 Enemies: Animation
         List<Image> images =
-            ImageStride.CreateStrides(4, "Galaga.Assets.Images.BlueMonster.png"); //ImageStride (ligger i Graphics) får dem til at bevæge sig. 4 henviser til antallet af frames i image-filen. The string er der hvor images bor.
+            ImageStride.CreateStrides(4, "Galaga.Assets.Images.BlueMonster.png"); 
         const int numEnemies = 8;
-        enemies = new EntityContainer<Enemy>(numEnemies); //Entitycontainer kan vist ses som en liste af entities. Tager int size.
+        enemies = new EntityContainer<Enemy>(numEnemies); 
         for (int i = 0; i < numEnemies; i++) {
-            enemies.AddEntity(new Enemy( // Her tilføjes enemy entities til EntetyContaineren en ad gangen til vi når i-1.
-                new DynamicShape(new Vector2(0.1f + (float)i * 0.1f, 0.9f), // Her placeres en enemy på skærmen. i sørger for, at de ikke ligger oveni hinanden.
+            enemies.AddEntity(new Enemy( 
+                new DynamicShape(new Vector2(0.1f + (float)i * 0.1f, 0.9f), 
                                 new Vector2(0.1f, 0.1f)),
-                new ImageStride(80, images))); // Her sættes en ImageStride: public ImageStride(int milliseconds, IEnumerable<Image> images) 
+                new ImageStride(80, images),
+                gameEventBus));  
         }
-        //5.2.4 Player: Shooting
+    
         playerShots = new EntityContainer<PlayerShot>();
         playerShotImage = new Image("Galaga.Assets.Images.BulletRed2.png"); 
 
-        // 5.3 Events
-        gameEventBus = new GameEventBus(); //GameEventBus obj (Events.GameEventBus)
-        gameEventBus.Subscribe<AddExplosionEvent>(AddExplosion); //Tilføjer AddExplosion til eventbus
-        enemyExplosions = new AnimationContainer(numEnemies); //Instantierer en container med 8 pladser
+        enemyExplosions = new AnimationContainer(numEnemies); 
         explosionStrides = ImageStride.CreateStrides(
             8, "Galaga.Assets.Images.Explosion.png" 
-        ); //Laver en liste med 8 billieder af eksplosion
+        );
     }
     
     private void IterateShots() {
         float topBoundary = 1f; 
-        playerShots.Iterate(shots => {  //=>{} er en lambda funktion. shots er én instance af Playershots. Den tilgås via shots.Shape
-            shots.Shape.Move(); //bevæger shots
+        playerShots.Iterate(shots => {
+            shots.Shape.Move();
             if (shots.Shape.Position.Y + shots.Shape.Extent.Y >= topBoundary) { 
-                shots.DeleteEntity(); // hvis shot kommer udenfor skærmens top slettes det
+                shots.DeleteEntity();
             } 
             else {
                 enemies.Iterate(enemy => { 
                 CollisionData data = 
                     CollisionDetection.Aabb(
-                        shots.Shape.AsDynamicShape(), enemy.Shape.AsDynamicShape() //shots og enemy castes til at være dynamicshapes for at kollision kan tjekkes
-                    ); //beregner kollision som objekt
-                if (data.Collision) { //bestemmer en bool udfra kollisions-objektet (CollisionData.cs)
-                    shots.DeleteEntity(); //shots slettes ved kollision -> true
-                    gameEventBus.RegisterEvent<AddExplosionEvent>(
-                        new AddExplosionEvent(enemy.Position, enemy.Extent)); //Tilføjer et event til eventbus køen
-                    enemy.DeleteEntity(); //shots slettes ved kollision -> true
+                        shots.Shape.AsDynamicShape(), enemy.Shape.AsDynamicShape()
+                    );
+                if (data.Collision) {
+                    shots.DeleteEntity();
+                    enemy.DeleteEnemy();
                 } 
                 });
             }
@@ -83,13 +81,13 @@ public class Game : DIKUGame {
         playerShots.AddEntity(shot);
     }
 
-    ~Game() { //Cleanup?
+    ~Game() {
         gameEventBus.Unsubscribe<AddExplosionEvent>(AddExplosion);
     }    
 
     public override void Render(WindowContext context) {
         player.RenderEntity(context);
-        enemies.RenderEntities(context); // RenderEnteties ligger i EntityContainer.cs.
+        enemies.RenderEntities(context);
         enemyExplosions.RenderAnimations(context);
         playerShots.RenderEntities(context); 
     }
@@ -97,7 +95,7 @@ public class Game : DIKUGame {
     public override void Update() {
         IterateShots();
         player.Move();
-        gameEventBus.ProcessEvents(); //Kører events gemt i gameEventBus & fortæller subscribers at events er kørt
+        gameEventBus.ProcessEvents();
     }
 
     public override void KeyHandler(KeyboardAction action, KeyboardKey key) {
