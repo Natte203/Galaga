@@ -2,8 +2,6 @@ namespace Galaga;
 
 using System.Collections.Generic;
 using System.Numerics;
-using Microsoft.VisualBasic;
-using System.Reflection;
 using DIKUArcade;
 using DIKUArcade.GUI;
 using DIKUArcade.Input;
@@ -11,7 +9,7 @@ using DIKUArcade.Entities;
 using DIKUArcade.Graphics;
 using DIKUArcade.Events; 
 using DIKUArcade.Physics;
-using System.Security.Principal;
+using Galaga.Movement;
 
 public class Game : DIKUGame {
     private Player player;
@@ -34,15 +32,26 @@ public class Game : DIKUGame {
         
         List<Image> images =
             ImageStride.CreateStrides(4, "Galaga.Assets.Images.BlueMonster.png"); 
-        const int numEnemies = 8;
-        enemies = new EntityContainer<Enemy>(numEnemies); 
-        for (int i = 0; i < numEnemies; i++) {
-            enemies.AddEntity(new Enemy( 
-                new DynamicShape(new Vector2(0.1f + (float)i * 0.1f, 0.9f), 
+        const int numEnemies = 1;
+        enemies = new EntityContainer<Enemy>(numEnemies); // 36 - 54 Changed NDO
+        enemies.AddEntity(new Enemy( 
+                new DynamicShape(new Vector2(0.3f, 0.9f), 
                                 new Vector2(0.1f, 0.1f)),
                 new ImageStride(80, images),
-                gameEventBus));  
-        }
+                gameEventBus,
+                new Down()));
+        enemies.AddEntity(new Enemy( 
+                new DynamicShape(new Vector2(0.5f, 0.9f), 
+                                new Vector2(0.1f, 0.1f)),
+                new ImageStride(80, images),
+                gameEventBus,
+                new NoMove()));
+        enemies.AddEntity(new Enemy( 
+                new DynamicShape(new Vector2(0.7f, 0.9f), 
+                                new Vector2(0.1f, 0.1f)),
+                new ImageStride(80, images),
+                gameEventBus,
+                new ZigZagDown()));
     
         playerShots = new EntityContainer<PlayerShot>();
         playerShotImage = new Image("Galaga.Assets.Images.BulletRed2.png"); 
@@ -96,6 +105,7 @@ public class Game : DIKUGame {
         IterateShots();
         player.Move();
         gameEventBus.ProcessEvents();
+        enemies.Iterate(enemy => { enemy.Move(); }); // Added NDO
     }
 
     public override void KeyHandler(KeyboardAction action, KeyboardKey key) {
