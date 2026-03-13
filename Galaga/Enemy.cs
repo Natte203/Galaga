@@ -37,6 +37,7 @@ public class Enemy : Entity {
             IHitStrategy hitStrat, IMovementStrategy mvStrat)
             : base(shape, image) {
         causeEnrageImage = enragedImage;
+        Position = shape.Position;
         gameEventBus = eventBus;
         movementStrategy = mvStrat;
         StartPosition = shape.Position;

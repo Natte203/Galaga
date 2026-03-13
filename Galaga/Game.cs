@@ -3,6 +3,8 @@ namespace Galaga;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
+using System.Reflection;
+using System.Security.Principal;
 using DIKUArcade;
 using DIKUArcade.Entities;
 using DIKUArcade.Events;
@@ -12,14 +14,16 @@ using DIKUArcade.Input;
 using DIKUArcade.Physics;
 using Galaga.Hit;
 using Galaga.Movement;
+using Galaga.Squadron;
+using Microsoft.VisualBasic;
 
 public class Game : DIKUGame {
     private Player player;
-    private EntityContainer<Enemy> enemies;
+    private EntityContainer<Enemy> enemies = new EntityContainer<Enemy>(0);
     private EntityContainer<PlayerShot> playerShots;
     private IBaseImage playerShotImage;
     private GameEventBus gameEventBus;
-    private AnimationContainer enemyExplosions;
+    private AnimationContainer enemyExplosions = new AnimationContainer(0);
     private List<Image> explosionStrides;
     private const int EXPLOSION_LENGTH_MS = 500;
 
@@ -95,9 +99,38 @@ public class Game : DIKUGame {
         explosionStrides = ImageStride.CreateStrides(
             8, "Galaga.Assets.Images.Explosion.png"
         );
+        CreateSquadron();
     }
 
-    private void IterateShots() {
+    //Helper for CreateSquadron
+    private ISquadron CreateFormation(int pick, Vector2 origin) {
+        return pick switch {
+            0 => new SquadronBox(origin),
+            1 => new SquadronDiamond(origin),
+            2 => new SquadronZigZag(origin),
+            _ => new SquadronBox(origin)
+        };
+    }
+
+    private void CreateSquadron() {
+        var random = new Random();
+        int pick = random.Next(3);                                              //temporary origin
+        var origin = CreateFormation(pick, Vector2.Zero).GetSafeOrigin(random); // get safe origin
+        ISquadron squadron = CreateFormation(pick, origin);                     // recreate with real origin
+        List<Image> enemyStrides = ImageStride.CreateStrides(4, "Galaga.Assets.Images.BlueMonster.png");
+        List<Image> enragedStrides = ImageStride.CreateStrides(4, "Galaga.Assets.Images.BlueMonster.png");
+
+        enemyExplosions = new AnimationContainer(squadron.numEnemies);
+        enemies = squadron.CreateEnemies(
+            enemyStrides,
+            enragedStrides,
+            () => new NoMovement(), //factory lambda 
+            () => new DefaultHit(), //factory lambda
+            gameEventBus);
+    }
+
+
+    private void iterateShots() {
         float topBoundary = 1f;
         playerShots.Iterate(shots => {
             shots.Shape.Move();
@@ -136,7 +169,7 @@ public class Game : DIKUGame {
     }
 
     public override void Update() {
-        IterateShots();
+        iterateShots();
         player.Move();
         gameEventBus.ProcessEvents();
         enemies.Iterate(enemy => { enemy.Move(); }); // Added NDO

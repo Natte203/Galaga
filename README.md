@@ -1,4 +1,6 @@
+Jeanette Nørgaard rbv 382
 
+https://github.com/DIKU-SU/a6-jeanxnor
 
 
 Natasja D. Østner - dmg749
