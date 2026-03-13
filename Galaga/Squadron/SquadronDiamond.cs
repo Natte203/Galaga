@@ -14,7 +14,7 @@ public class SquadronDiamond : ISquadron {
     public Vector2 GetSafeOrigin(Random random) {
         return new Vector2(
             random.NextSingle() *0.3f + 0.1f, 
-            random.NextSingle() *0.4f + 0.1f);
+            random.NextSingle() *0.1f + 0.8f);
     }
 
     public Vector2 GetPosition(int index) {
