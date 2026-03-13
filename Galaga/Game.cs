@@ -119,13 +119,12 @@ public class Game : DIKUGame {
         ISquadron squadron = CreateFormation(pick, origin);                     // recreate with real origin
         List<Image> enemyStrides = ImageStride.CreateStrides(4, "Galaga.Assets.Images.BlueMonster.png");
         List<Image> enragedStrides = ImageStride.CreateStrides(4, "Galaga.Assets.Images.BlueMonster.png");
-
         enemyExplosions = new AnimationContainer(squadron.numEnemies);
         enemies = squadron.CreateEnemies(
             enemyStrides,
             enragedStrides,
-            () => new NoMovement(), //factory lambda 
-            () => new DefaultHit(), //factory lambda
+            () => new ZigZagDown(), //factory lambda 
+            () => new IncreaseSpeedStrategy(), //factory lambda
             gameEventBus);
     }
 
