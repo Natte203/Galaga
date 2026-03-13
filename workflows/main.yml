@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  pull_request:
+
+  push:
+    branches: [ master ]
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            7.0.x
+      
+      - name: Build project
+        run: dotnet build
+      
+      - name: Style check
+        run: dotnet format ./DIKUArcade.sln --verify-no-changes
+      
+      - name: Run tests
+        run: dotnet test
