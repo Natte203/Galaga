@@ -9,11 +9,11 @@ using DIKUArcade.Graphics;
 using Galaga.Hit;
 using Galaga.Movement;
 
-public abstract class SquadronBase : ISquadron{
+public abstract class SquadronBase : ISquadron {
     protected readonly GameEventBus gameEventBus;
 
     protected SquadronBase(GameEventBus gameEventBus) {
-    this.gameEventBus = gameEventBus;
+        this.gameEventBus = gameEventBus;
     }
 
     public abstract Vector2 GetPosition(int index);
@@ -33,7 +33,7 @@ public abstract class SquadronBase : ISquadron{
             enemies.AddEntity(new Enemy(
                 new DynamicShape(pos, new Vector2(0.1f, 0.1f)),
                 new ImageStride(80, enemyStrides),
-                new ImageStride(80, enragedStrides), 
+                new ImageStride(80, enragedStrides),
                 gameEventBus,
                 hit(),
                 movement()));

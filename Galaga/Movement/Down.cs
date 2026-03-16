@@ -6,7 +6,8 @@ using DIKUArcade.Entities;
 public class Down : IMovementStrategy {
     private float speed = -0.0003f;
 
-    public Down() {}
+    public Down() {
+    }
 
     public void Scale(float factor) {
         speed *= factor;

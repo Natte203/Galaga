@@ -3,43 +3,57 @@ namespace Galaga;
 using System;
 using System.Numerics;
 using DIKUArcade.Entities;
+using DIKUArcade.Events;
 using DIKUArcade.Graphics;
 using Galaga.Hit;
 using Galaga.Movement;
-using DIKUArcade.Events;
 
 public class Enemy : Entity {
     public Vector2 Position {
-        get { return Shape.Position; }
-        private set { Shape.Position = value; }
+        get {
+            return Shape.Position;
+        }
+        private set {
+            Shape.Position = value;
+        }
     }
     public Vector2 Extent {
-        get { return Shape.Extent; }
+        get {
+            return Shape.Extent;
+        }
     }
     private GameEventBus gameEventBus;
-    public Vector2 StartPosition { get; set; }
+    public Vector2 StartPosition {
+        get; set;
+    }
     private IBaseImage causeEnrageImage;
     public IBaseImage CauseEnrageImage {
-        get { return causeEnrageImage; }
+        get {
+            return causeEnrageImage;
+        }
     }
     private IHitStrategy hitStrategy;
     private int hitpoints = 5;
     public int Hitpoints {
-        get { return hitpoints; }
+        get {
+            return hitpoints;
+        }
     }
     private IMovementStrategy movementStrategy;
     public IMovementStrategy MovementStrategy {
-        get { return movementStrategy; }
+        get {
+            return movementStrategy;
+        }
     }
 
     public Enemy(
-        DynamicShape shape, 
-        IBaseImage image, 
+        DynamicShape shape,
+        IBaseImage image,
         IBaseImage enragedImage,
         GameEventBus eventBus,
         IHitStrategy hitStrat,
         IMovementStrategy mvStrat) : base(shape, image) {
-        causeEnrageImage = enragedImage;    
+        causeEnrageImage = enragedImage;
         Position = shape.Position;
         gameEventBus = eventBus;
         movementStrategy = mvStrat;
@@ -52,7 +66,7 @@ public class Enemy : Entity {
         DeleteEntity();
     }
 
-    public void Move() { 
+    public void Move() {
         movementStrategy.Move(this);
         Position = new Vector2(
             Math.Clamp(Position.X, 0.0f, 1.0f - Extent.X), Math.Clamp(Position.Y, 0.2f, 0.9f));

@@ -2,12 +2,12 @@ namespace GalagaTests;
 
 using System.Numerics;
 using DIKUArcade.Entities;
+using DIKUArcade.Events;
 using DIKUArcade.Graphics;
 using DIKUArcade.Input;
 using Galaga;
 using Galaga.Squadron;
 using NUnit.Framework;
-using DIKUArcade.Events;
 
 public class TestsSquadron {
 
@@ -18,7 +18,7 @@ public class TestsSquadron {
         SquadronBase squadron = pick switch {
             0 => new SquadronBox(new Vector2(0.1f, 0.8f), new GameEventBus()),
             1 => new SquadronDiamond(new Vector2(0.1f, 0.9f), new GameEventBus()),
-            2 => new SquadronZigZag(new Vector2(0.1f, 0.9f), new GameEventBus()), 
+            2 => new SquadronZigZag(new Vector2(0.1f, 0.9f), new GameEventBus()),
             _ => new SquadronBox(new Vector2(0.1f, 0.8f), new GameEventBus())
         };
 

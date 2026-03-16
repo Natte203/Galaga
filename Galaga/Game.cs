@@ -34,8 +34,8 @@ public class Game : DIKUGame {
             new Image("Galaga.Assets.Images.Player.png"));
 
         gameEventBus = new GameEventBus();
-        gameEventBus.Subscribe<AddExplosionEvent>(AddExplosion); 
-        
+        gameEventBus.Subscribe<AddExplosionEvent>(AddExplosion);
+
         // List<Image> images =
         //     ImageStride.CreateStrides(4, "Galaga.Assets.Images.BlueMonster.png"); 
         // const int numEnemies = 1;
@@ -58,9 +58,9 @@ public class Game : DIKUGame {
         //         new ImageStride(80, images),
         //         gameEventBus,
         //         new ZigZagDown()));
-    
+
         playerShots = new EntityContainer<PlayerShot>();
-        playerShotImage = new Image("Galaga.Assets.Images.BulletRed2.png"); 
+        playerShotImage = new Image("Galaga.Assets.Images.BulletRed2.png");
 
         List<Image> images =
             ImageStride.CreateStrides(4, "Galaga.Assets.Images.BlueMonster.png");
@@ -115,9 +115,9 @@ public class Game : DIKUGame {
     private void CreateSquadron() {
         var random = new Random();
         int pick = random.Next(3);                                              //temporary origin
-        var temp = (SquadronBase)CreateFormation(pick, Vector2.Zero);           // get safe origin
+        var temp = (SquadronBase) CreateFormation(pick, Vector2.Zero);           // get safe origin
         var origin = temp.GetSafeOrigin(random);
-        SquadronBase squadron = (SquadronBase)CreateFormation(pick, origin);    // recreate with real origin
+        SquadronBase squadron = (SquadronBase) CreateFormation(pick, origin);    // recreate with real origin
         List<Image> enemyStrides = ImageStride.CreateStrides(4, "Galaga.Assets.Images.BlueMonster.png");
         List<Image> enragedStrides = ImageStride.CreateStrides(2, "Galaga.Assets.Images.RedMonster.png");
 

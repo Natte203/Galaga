@@ -8,7 +8,7 @@ public class SquadronDiamond : SquadronBase {
 
     public override int numEnemies => 13;
 
-    public SquadronDiamond(Vector2 origin, GameEventBus gameEventBus) : base (gameEventBus) {
+    public SquadronDiamond(Vector2 origin, GameEventBus gameEventBus) : base(gameEventBus) {
         this.origin = origin;
     }
 

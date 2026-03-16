@@ -11,7 +11,8 @@ public class ZigZagDown : IMovementStrategy {
 
 
 
-    public ZigZagDown() {}
+    public ZigZagDown() {
+    }
 
     public void Scale(float factor) {
         speed *= factor;
@@ -21,9 +22,9 @@ public class ZigZagDown : IMovementStrategy {
         var enemyDynShape = (DynamicShape) enemy.Shape;
         float posY = enemy.Position.Y;
         float posX = enemy.Position.X;
-        posX = 
-            enemy.StartPosition.X + AMPLITUDE * (
-                (float) Math.Sin(2 * Math.PI * (enemy.StartPosition.Y - (posY + speed) / PERIOD)));
+        posX =
+            enemy.StartPosition.X + AMPLITUDE * 
+                (float) Math.Sin(2 * Math.PI * (enemy.StartPosition.Y - (posY + speed) / PERIOD));
         enemyDynShape.ChangeVelocity(new Vector2(posX - enemy.Position.X, speed));
         enemyDynShape.Move();
     }

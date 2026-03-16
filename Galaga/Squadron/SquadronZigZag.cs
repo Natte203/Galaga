@@ -8,7 +8,7 @@ public class SquadronZigZag : SquadronBase {
 
     public override int numEnemies => 9;
 
-    public SquadronZigZag(Vector2 origin, GameEventBus gameEventBus) : base (gameEventBus) {
+    public SquadronZigZag(Vector2 origin, GameEventBus gameEventBus) : base(gameEventBus) {
         this.origin = origin;
     }
 
