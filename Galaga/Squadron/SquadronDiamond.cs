@@ -1,23 +1,24 @@
 namespace Galaga.Squadron;
 using System;
 using System.Numerics;
+using DIKUArcade.Events;
 
-public class SquadronDiamond : ISquadron {
+public class SquadronDiamond : SquadronBase {
     private readonly Vector2 origin;
 
-    public int numEnemies => 13;
+    public override int numEnemies => 13;
 
-    public SquadronDiamond(Vector2 origin) {
+    public SquadronDiamond(Vector2 origin, GameEventBus gameEventBus) : base (gameEventBus) {
         this.origin = origin;
     }
 
-    public Vector2 GetSafeOrigin(Random random) {
+    public override Vector2 GetSafeOrigin(Random random) {
         return new Vector2(
             random.NextSingle() * 0.3f + 0.1f,
             random.NextSingle() * 0.1f + 0.8f);
     }
 
-    public Vector2 GetPosition(int index) {
+    public override Vector2 GetPosition(int index) {
         int row = 0;
         int column = 0;
         int remaining = index;

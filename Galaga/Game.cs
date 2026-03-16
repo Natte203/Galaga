@@ -105,29 +105,30 @@ public class Game : DIKUGame {
     //Helper for CreateSquadron
     private ISquadron CreateFormation(int pick, Vector2 origin) {
         return pick switch {
-            0 => new SquadronBox(origin),
-            1 => new SquadronDiamond(origin),
-            2 => new SquadronZigZag(origin),
-            _ => new SquadronBox(origin)
+            0 => new SquadronBox(origin, gameEventBus),
+            1 => new SquadronDiamond(origin, gameEventBus),
+            2 => new SquadronZigZag(origin, gameEventBus),
+            _ => new SquadronBox(origin, gameEventBus)
         };
     }
 
     private void CreateSquadron() {
         var random = new Random();
         int pick = random.Next(3);                                              //temporary origin
-        var origin = CreateFormation(pick, Vector2.Zero).GetSafeOrigin(random); // get safe origin
-        ISquadron squadron = CreateFormation(pick, origin);                     // recreate with real origin
+        var temp = (SquadronBase)CreateFormation(pick, Vector2.Zero);           // get safe origin
+        var origin = temp.GetSafeOrigin(random);
+        SquadronBase squadron = (SquadronBase)CreateFormation(pick, origin);    // recreate with real origin
         List<Image> enemyStrides = ImageStride.CreateStrides(4, "Galaga.Assets.Images.BlueMonster.png");
-        List<Image> enragedStrides = ImageStride.CreateStrides(4, "Galaga.Assets.Images.BlueMonster.png");
+        List<Image> enragedStrides = ImageStride.CreateStrides(2, "Galaga.Assets.Images.RedMonster.png");
+
         enemyExplosions = new AnimationContainer(squadron.numEnemies);
         enemies = squadron.CreateEnemies(
             enemyStrides,
             enragedStrides,
-            () => new ZigZagDown(), //factory lambda 
-            () => new IncreaseSpeedStrategy(), //factory lambda
-            gameEventBus);
+            () => new ZigZagDown(),               //factory lambda
+            () => new CauseEnrageStrategy()    //factory lambda 
+        );
     }
-
 
     private void iterateShots() {
         float topBoundary = 1f;

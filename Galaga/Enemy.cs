@@ -33,10 +33,13 @@ public class Enemy : Entity {
     }
 
     public Enemy(
-        DynamicShape shape, IBaseImage image, IBaseImage enragedImage, GameEventBus eventBus, 
-            IHitStrategy hitStrat, IMovementStrategy mvStrat)
-            : base(shape, image) {
-        causeEnrageImage = enragedImage;
+        DynamicShape shape, 
+        IBaseImage image, 
+        IBaseImage enragedImage,
+        GameEventBus eventBus,
+        IHitStrategy hitStrat,
+        IMovementStrategy mvStrat) : base(shape, image) {
+        causeEnrageImage = enragedImage;    
         Position = shape.Position;
         gameEventBus = eventBus;
         movementStrategy = mvStrat;
